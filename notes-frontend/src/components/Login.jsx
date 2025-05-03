@@ -24,6 +24,7 @@ export default function Login() {
     
             const token = res.data.token;
             localStorage.setItem("token", token); // Simpan token di localStorage
+            localStorage.setItem("lastActivity", Date.now()); // simpan waktu sekarang
             
     
             setMessage("Login berhasil!");

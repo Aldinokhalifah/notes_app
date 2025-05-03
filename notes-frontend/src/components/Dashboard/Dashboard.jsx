@@ -2,11 +2,17 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FiPlus, FiSearch, FiUser, FiEdit, FiTrash2, FiClock } from "react-icons/fi";
+import { checkInactivity } from "../../utils/checkInactivity";
+import CreateNote from "../pages/createNote";
+import EditNote from "../pages/editNote";
 
 export default function Dashboard() {
     const [user, setUser] = useState(null);
     const [notes, setNotes] = useState([]);
     const navigate = useNavigate();
+    const [ isCreateNoteOpen, setIsCreateNoteOpen] = useState(false);
+    const [ isEditNoteOpen, setIsEditNoteOpen] = useState(false);
+    const [selectedNote, setSelectedNote] = useState(null);
 
     // Ambil token dari localStorage
     const token = localStorage.getItem("token");
@@ -40,6 +46,31 @@ export default function Dashboard() {
         fetchData();
     }, [token, navigate]);
 
+    useEffect(() => {
+        const handleActivity = ()=> {
+            localStorage.setItem("lastActivity", Date.now());
+        };
+
+        window.addEventListener("mousemove", handleActivity);
+        window.addEventListener("keydown", handleActivity);
+
+        return () => {
+            window.removeEventListener("mousemove", handleActivity);
+            window.removeEventListener("keydown", handleActivity);
+        };
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (checkInactivity()) {
+                window.location.href = "/login"; // redirect ke login
+            }
+        }, 60000); // cek tiap 1 menit
+        
+            return () => clearInterval(interval);
+        }, []);
+        
+
     const handleLogout = () => {
         localStorage.removeItem("token");
         navigate("/login");
@@ -53,6 +84,20 @@ export default function Dashboard() {
         month: 'long',
         day: 'numeric'
     });
+
+    const handleNoteCreated = (newNote) => {
+        setNotes(prevNotes => [newNote, ...prevNotes]);
+    };
+
+    const handleNoteEdited = (editedNote) => {
+        setNotes(prevNotes => 
+            prevNotes.map(note => 
+                note.customId === editedNote.customId ? editedNote : note
+            )
+        );
+        setIsEditNoteOpen(false);
+        setSelectedNote(null);
+    };
     
 
 
@@ -63,9 +108,19 @@ export default function Dashboard() {
                 <p className="px-1 font-bold text-gray-800 text-center font-mono text-balance">Hello, {user?.name}</p>
                 <div className="flex md:flex-col items-center gap-4 md:gap-6">
                     <FiUser  className="text-gray-700 hover:cursor-pointer text-2xl" />
-                    <button className="p-2 bg-black text-white font-semibold rounded-full hover:cursor-pointer hover:bg-gray-800 hover:rotate-45 transition-all duration-300">
+                    <button 
+                        onClick={() => setIsCreateNoteOpen(true)}
+                        className="p-2 bg-black text-white font-semibold rounded-full hover:cursor-pointer hover:bg-gray-800 hover:rotate-45 transition-all duration-300"
+                    >
                         <FiPlus />
                     </button>
+
+                    {isCreateNoteOpen && (
+                        <CreateNote
+                            onClose={() => setIsCreateNoteOpen(false)}
+                            onNoteCreated={handleNoteCreated}
+                        />
+                    )}
                     <button
                             onClick={handleLogout}
                             className="sm:hidden w-full md:w-auto font-semibold hover:cursor-pointer px-3 py-1 bg-black hover:bg-gray-800 text-white rounded-md shadow-md transform transition-all"
@@ -121,19 +176,29 @@ export default function Dashboard() {
                                 });
         
                                 return (
-                                    <div key={notes._id} 
+                                    <div key={notes.customId} 
                                         className={`relative w-full ${color} rounded-xl p-4 flex flex-col`}>
                                         <div className="mb-1 text-xs md:text-sm flex items-center gap-2 text-gray-600">
                                             <FiClock size={14} />{formattedDate}
                                         </div>
                                         
-                                        <div className="flex justify-between items-start">
-                                            <h2 className="text-lg md:text-xl font-bold text-black mb-4">
-                                                {notes.title}
-                                            </h2>
-                                            <div className="bg-black rounded-md p-1 hover:cursor-pointer">
-                                                <FiEdit size={18} className={`${Textcolor}`} />
-                                            </div>
+                                        <div className="flex flex-col justify-between items-start">
+                                            <div className="flex justify-between items-start w-full">
+                                                <h2 className="text-lg md:text-xl font-bold text-black mb-4">
+                                                    {notes.title}
+                                                </h2>
+                                                <div className="bg-black rounded-md p-1 hover:cursor-pointer items-end bg-contain">
+                                                        <button
+                                                            onClick={() => {
+                                                                setSelectedNote(notes);
+                                                                setIsEditNoteOpen(true);
+                                                            }}
+                                                        >
+                                                            <FiEdit size={18} className={`${Textcolor}`} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            <div className="bg-gray-800 w-full h-[0.5px]"></div>
                                         </div>
                                     
                                         <div className="flex-1">
@@ -148,6 +213,17 @@ export default function Dashboard() {
                                     </div>
                                 );
                             })}
+
+                            {isEditNoteOpen && selectedNote && (
+                                <EditNote
+                                    onClose={() => {
+                                        setIsEditNoteOpen(false);
+                                        setSelectedNote(null);
+                                    }}
+                                    onNoteEdited={handleNoteEdited}
+                                    note={selectedNote}
+                                />
+                            )}  
                         </div>
                     ) : (
                         <p className="text-center text-gray-700 italic">No Notes.</p>
