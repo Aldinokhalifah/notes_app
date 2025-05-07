@@ -12,19 +12,38 @@ export default function EditNote({ onClose, onNoteEdited, note }) {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
+
+             // Debug log
+            console.log("Editing note:", note);
+            console.log("Note customId:", note.customId);
+            
+            if (!note.customId) {
+                throw new Error("Note customId is undefined");
+            }
+
             const response = await axios.put(
                 `http://localhost:5000/api/notes/${note.customId}`,
                 editedNote,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                } }
             );
             if (response.status === 200) {
-                // Pastikan data yang dikirim ke parent component sesuai dengan format yang diharapkan
-                onNoteEdited({
+                const updatedNote = {
+                    ...note,
                     ...response.data.data,
-                    customId: note.customId
-                });
+                    customId: note.customId,
+                    title: editedNote.title,
+                    content: editedNote.content
+                };
+                onNoteEdited(updatedNote);
+                onClose();
             }
         } catch (error) {
+            console.error("Error updating note:", error);
+            console.error("Note details:", note);
+            console.error("Edited note details:", editedNote);
             console.error("Error updating note:", error);
         }
     };

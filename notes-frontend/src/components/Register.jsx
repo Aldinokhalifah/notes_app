@@ -50,7 +50,7 @@ export default function Register() {
                         name="name"
                         type="text"
                     />
-                    <label className="absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-emerald-500 peer-focus:text-sm" htmlFor="name">Name</label>
+                    <label className="absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-800 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-emerald-500 peer-focus:text-sm" htmlFor="name">Name</label>
                 </div>
                 <div className="relative">
                     <input
@@ -62,7 +62,7 @@ export default function Register() {
                         name="email"
                         type="email"
                     />
-                    <label className="absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-emerald-500 peer-focus:text-sm" htmlFor="email">Email address</label>
+                    <label className="absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-800 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-emerald-500 peer-focus:text-sm" htmlFor="email">Email address</label>
                 </div>
                 <div className="relative">
                     <input
@@ -74,7 +74,7 @@ export default function Register() {
                         name="password"
                         type="password"
                     />
-                    <label className="absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-emerald-500 peer-focus:text-sm" htmlFor="password">Password</label>
+                    <label className="absolute left-0 -top-3.5 text-gray-500 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-800 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-emerald-500 peer-focus:text-sm" htmlFor="password">Password</label>
                 </div>
                 <button 
                     className="w-full py-2 px-4 bg-gradient-to-r from-blue-500/80 to-emerald-500/80 hover:from-blue-600/80 hover:to-emerald-600/80 rounded-md shadow-lg shadow-blue-500/50 hover:shadow-emerald-500/50 text-white font-semibold transition duration-300"

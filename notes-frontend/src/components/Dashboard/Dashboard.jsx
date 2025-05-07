@@ -5,12 +5,12 @@ import { FiPlus, FiSearch, FiUser, FiEdit, FiTrash2, FiClock } from "react-icons
 import { checkInactivity } from "../../utils/checkInactivity";
 import CreateNote from "../pages/createNote";
 import EditNote from "../pages/editNote";
+import Aside from "../Aside";
 
 export default function Dashboard() {
     const [user, setUser] = useState(null);
     const [notes, setNotes] = useState([]);
     const navigate = useNavigate();
-    const [ isCreateNoteOpen, setIsCreateNoteOpen] = useState(false);
     const [ isEditNoteOpen, setIsEditNoteOpen] = useState(false);
     const [selectedNote, setSelectedNote] = useState(null);
 
@@ -30,7 +30,7 @@ export default function Dashboard() {
                 const user = await axios.get("http://localhost:5000/api/user/profile", {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                setUser(user.data);
+                setUser(user.data);``
 
                 // Ambil semua notes
                 const notes = await axios.get("http://localhost:5000/api/notes", {
@@ -86,7 +86,13 @@ export default function Dashboard() {
     });
 
     const handleNoteCreated = (newNote) => {
-        setNotes(prevNotes => [newNote, ...prevNotes]);
+        // Pastikan format data sesuai
+        const formattedNote = {
+            ...newNote,
+            customId: newNote.id, // Backend mengirim id sebagai customId
+            createdAt: new Date().toISOString()
+        };
+        setNotes(prevNotes => [formattedNote, ...prevNotes]);
     };
 
     const handleNoteEdited = (editedNote) => {
@@ -98,43 +104,33 @@ export default function Dashboard() {
         setIsEditNoteOpen(false);
         setSelectedNote(null);
     };
+
+    const handleNoteDelete = async (customId) => {
+        try {
+            await axios.delete(`http://localhost:5000/api/notes/${customId}`, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setNotes(prevNotes => prevNotes.filter(note => note.customId !== customId));
+        } catch (error) {
+            console.error("Gagal menghapus note:", error.response?.data || error);
+        }
+    };
     
 
 
     return(
             <div className="flex flex-col md:flex-row h-screen w-full">
             {/* Sidebar */}
-            <aside className="w-full md:w-24 bg-white flex md:flex-col items-center justify-between md:justify-start p-4 md:py-6 md:space-y-6">
-                <p className="px-1 font-bold text-gray-800 text-center font-mono text-balance">Hello, {user?.name}</p>
-                <div className="flex md:flex-col items-center gap-4 md:gap-6">
-                    <FiUser  className="text-gray-700 hover:cursor-pointer text-2xl" />
-                    <button 
-                        onClick={() => setIsCreateNoteOpen(true)}
-                        className="p-2 bg-black text-white font-semibold rounded-full hover:cursor-pointer hover:bg-gray-800 hover:rotate-45 transition-all duration-300"
-                    >
-                        <FiPlus />
-                    </button>
-
-                    {isCreateNoteOpen && (
-                        <CreateNote
-                            onClose={() => setIsCreateNoteOpen(false)}
-                            onNoteCreated={handleNoteCreated}
-                        />
-                    )}
-                    <button
-                            onClick={handleLogout}
-                            className="sm:hidden w-full md:w-auto font-semibold hover:cursor-pointer px-3 py-1 bg-black hover:bg-gray-800 text-white rounded-md shadow-md transform transition-all"
-                        >
-                            Logout
-                        </button>
-                </div>
-            </aside>
+                <Aside 
+                user={user}
+                onNoteCreated={handleNoteCreated}
+            />
         
             <div className="flex-1 flex flex-col">
                 {/* Header */}
-                <header className="flex flex-col md:flex-row items-center gap-4 md:gap-0 p-4 md:px-8 md:py-4 bg-white">
-                    <div className="w-full md:w-1/4 font-mono text-sm text-center md:text-left">
-                        <p className="flex gap-1 justify-center md:justify-start">
+                <header className="flex flex-col md:flex-row items-center gap-4 md:gap-4 p-4 md:px-8 md:py-4 bg-white">
+                    <div className="w-full md:w-1/4 font-mono text-sm hidden md:block">
+                        <p className="flex gap-1 items-center  justify-center flex-col lg:flex-row">
                             Today : <span className="font-semibold">{formattedDate}</span>
                         </p>
                     </div>
@@ -151,7 +147,7 @@ export default function Dashboard() {
                     <div className="w-full md:w-1/4 flex items-center justify-center md:justify-end">
                         <button
                             onClick={handleLogout}
-                            className="hidden sm:block w-full md:w-auto font-semibold hover:cursor-pointer px-6 py-2 bg-black hover:bg-gray-800 text-white rounded-md shadow-md transform transition-all"
+                            className="hidden md:block w-full md:w-auto font-semibold hover:cursor-pointer px-6 py-2 bg-black hover:bg-gray-800 text-white rounded-md shadow-md transform transition-all"
                         >
                             Logout
                         </button>
@@ -165,10 +161,7 @@ export default function Dashboard() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto">
                             {notes.map((notes, index) => {
                                 const colors = ["bg-pink-200", "bg-blue-200", "bg-green-200", "bg-purple-200", "bg-yellow-200"];
-                                const color = colors[index % colors.length];
-                                const Textcolors = ["text-pink-200", "text-blue-200", "text-green-200", "text-purple-200", "text-yellow-200"];
-                                const Textcolor = Textcolors[index % Textcolors.length];
-                                
+                                const color = colors[index % colors.length];                                
                                 const formattedDate = new Date(notes.createdAt).toLocaleDateString('en-ID', {
                                     year: 'numeric',
                                     month: 'long',
@@ -187,18 +180,22 @@ export default function Dashboard() {
                                                 <h2 className="text-lg md:text-xl font-bold text-black mb-4">
                                                     {notes.title}
                                                 </h2>
-                                                <div className="bg-black rounded-md p-1 hover:cursor-pointer items-end bg-contain">
-                                                        <button
-                                                            onClick={() => {
-                                                                setSelectedNote(notes);
-                                                                setIsEditNoteOpen(true);
-                                                            }}
-                                                        >
-                                                            <FiEdit size={18} className={`${Textcolor}`} />
-                                                        </button>
+                                                <div className="p-1 hover:cursor-pointer items-end bg-contain">
+                                                <button
+                                                    onClick={() => {
+                                                        const noteToEdit = {
+                                                            ...notes,
+                                                            customId: notes.customId || notes.id // Fallback ke id jika customId tidak ada
+                                                        };
+                                                        setSelectedNote(noteToEdit);
+                                                        setIsEditNoteOpen(true);
+                                                    }}
+                                                >
+                                                    <FiEdit size={18} className="text-gray-600 hover:text-gray-800" />
+                                                </button>
                                                     </div>
                                                 </div>
-                                            <div className="bg-gray-800 w-full h-[0.5px]"></div>
+                                            <div className="bg-gray-800 w-full h-[0.5px] my-2"></div>
                                         </div>
                                     
                                         <div className="flex-1">
@@ -208,7 +205,12 @@ export default function Dashboard() {
                                         </div>
                                         
                                         <div className="flex items-center mt-4 text-gray-600 hover:cursor-pointer">
-                                            <FiTrash2 size={18} className="mr-1" />
+                                            <button
+                                                onClick={() => handleNoteDelete(notes.customId)}
+                                                className="hover:text-gray-800 transition-colors"
+                                            >
+                                                <FiTrash2 size={18} className="mr-1" />
+                                            </button>
                                         </div>
                                     </div>
                                 );
