@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { FiPlus, FiSearch, FiUser, FiEdit, FiTrash2, FiClock } from "react-icons/fi";
+import { FiSearch, FiUser, FiEdit, FiTrash2, FiClock } from "react-icons/fi";
 import { checkInactivity } from "../../utils/checkInactivity";
-import CreateNote from "../pages/createNote";
 import EditNote from "../pages/editNote";
 import Aside from "../Aside";
 
@@ -170,22 +169,24 @@ export default function Dashboard() {
         
                                 return (
                                     <div key={notes.customId} 
-                                        className={`relative w-full ${color} rounded-xl p-4 flex flex-col`}>
-                                        <div className="mb-1 text-xs md:text-sm flex items-center gap-2 text-gray-600">
-                                            <FiClock size={14} />{formattedDate}
-                                        </div>
-                                        
-                                        <div className="flex flex-col justify-between items-start">
-                                            <div className="flex justify-between items-start w-full">
-                                                <h2 className="text-lg md:text-xl font-bold text-black mb-4">
-                                                    {notes.title}
-                                                </h2>
-                                                <div className="p-1 hover:cursor-pointer items-end bg-contain">
+                                    className={`relative w-full ${color} rounded-xl p-4 flex flex-col min-h-[200px] max-h-[400px]`}>
+                                    {/* Date section */}
+                                    <div className="mb-1 text-xs md:text-sm flex items-center gap-2 text-gray-600">
+                                        <FiClock size={14} />{formattedDate}
+                                    </div>
+                                    
+                                    {/* Title and edit button section */}
+                                    <div className="flex flex-col w-full">
+                                        <div className="flex justify-between items-start w-full">
+                                            <h2 className="text-lg md:text-xl font-bold text-black mb-2 line-clamp-2">
+                                                {notes.title}
+                                            </h2>
+                                            <div className="p-1 hover:cursor-pointer">
                                                 <button
                                                     onClick={() => {
                                                         const noteToEdit = {
                                                             ...notes,
-                                                            customId: notes.customId || notes.id // Fallback ke id jika customId tidak ada
+                                                            customId: notes.customId || notes.id
                                                         };
                                                         setSelectedNote(noteToEdit);
                                                         setIsEditNoteOpen(true);
@@ -193,26 +194,28 @@ export default function Dashboard() {
                                                 >
                                                     <FiEdit size={18} className="text-gray-600 hover:text-gray-800" />
                                                 </button>
-                                                    </div>
-                                                </div>
-                                            <div className="bg-gray-800 w-full h-[0.5px] my-2"></div>
+                                            </div>
                                         </div>
-                                    
-                                        <div className="flex-1">
-                                            <p className="text-sm md:text-base text-gray-700">
-                                                {notes.content}
-                                            </p>
-                                        </div>
-                                        
-                                        <div className="flex items-center mt-4 text-gray-600 hover:cursor-pointer">
-                                            <button
-                                                onClick={() => handleNoteDelete(notes.customId)}
-                                                className="hover:text-gray-800 transition-colors"
-                                            >
-                                                <FiTrash2 size={18} className="mr-1" />
-                                            </button>
-                                        </div>
+                                        <div className="bg-gray-800 w-full h-[0.5px] my-2"></div>
                                     </div>
+
+                                    {/* Content section */}
+                                    <div className="flex-1 overflow-y-auto mb-4">
+                                        <p className="text-sm md:text-base text-gray-700 break-words">
+                                            {notes.content}
+                                        </p>
+                                    </div>
+                                    
+                                    {/* Delete button section - fixed at bottom */}
+                                    <div className="flex items-center mt-auto text-gray-600 hover:cursor-pointer">
+                                        <button
+                                            onClick={() => handleNoteDelete(notes.customId)}
+                                            className="hover:text-gray-800 transition-colors"
+                                        >
+                                            <FiTrash2 size={18} className="mr-1" />
+                                        </button>
+                                    </div>
+                                </div>
                                 );
                             })}
 
