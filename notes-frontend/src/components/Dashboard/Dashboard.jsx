@@ -253,7 +253,7 @@ export default function Dashboard() {
                                         {/* Title and edit button section */}
                                         <div className="flex flex-col w-full">
                                             <div className="flex justify-between items-start w-full">
-                                                <h2 className="text-lg md:text-xl font-bold text-black mb-2 line-clamp-2">
+                                                <h2 className="text-lg md:text-xl font-bold text-black mb-2 break-words line-clamp-2">
                                                     {note.title}
                                                 </h2>
                                                 <div className="p-1 hover:cursor-pointer">

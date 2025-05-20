@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
 
 export default function Register() {
     const navigate = useNavigate();
@@ -18,10 +19,32 @@ export default function Register() {
         e.preventDefault();
         try {
             const res = await axios.post("http://localhost:5000/api/auth/register", form);
-            alert(res.data.message); // Tampilkan pesan sukses
+            // Tampilkan pesan sukses
+            Swal.fire({
+                title: (res.data.message),
+                text: 'Akun telah berhasil dibuat',
+                icon: 'success',
+                confirmButtonText: 'Login'
+            });
             navigate("/login");
         } catch (err) {
-            alert(err.response?.data?.message || "Terjadi kesalahan pada server");
+            Swal.fire({
+                title: (err.response?.data?.message || "Terjadi kesalahan pada server"),
+                text: 'Klik refresh untuk mencoba lagi',
+                icon: 'error',
+                confirmButtonText: 'Refresh',
+                showCancelButton: true,
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Reset form
+                    setForm({ name: '', email: '', password: '' });
+                    // Clear input fields
+                    document.getElementById('name').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('password').value = '';
+                }
+            });
         }
     }
 
