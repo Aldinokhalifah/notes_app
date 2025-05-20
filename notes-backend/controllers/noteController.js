@@ -1,5 +1,4 @@
 const Note = require('../models/note'); 
-const Counter = require('../models/Counter');
 
 const createNotes = async (req, res) => {
     try {
