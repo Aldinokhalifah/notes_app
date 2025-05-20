@@ -148,6 +148,7 @@ export default function Profile() {
                     value={profile.name}
                     onChange={handleProfileChange}
                     className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity- p-2"
+                    required
                 />
                 </div>
                 <div>
@@ -158,6 +159,7 @@ export default function Profile() {
                     value={profile.email}
                     onChange={handleProfileChange}
                     className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity- p-2"
+                    required
                 />
                 </div>
                 <div className="text-right">
@@ -178,6 +180,7 @@ export default function Profile() {
                     value={passwords.current_password}
                     onChange={handlePasswordChange}
                     className="p-2 mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    required
                 />
                 </div>
                 <div>
@@ -198,6 +201,7 @@ export default function Profile() {
                     value={passwords.password_confirmation}
                     onChange={handlePasswordChange}
                     className="p-2 mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                    required
                 />
                 </div>
                 <div className="text-right">

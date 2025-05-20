@@ -41,7 +41,7 @@ export default function Aside({ user, onNoteCreated }) {
                 </button>
                 <button 
                     onClick={() => setIsCreateNoteOpen(true)}
-                    className="p-2 bg-black text-white font-semibold rounded-full hover:cursor-pointer hover:bg-gray-800 hover:rotate-45 transition-all duration-300"
+                    className="p-2 bg-indigo-600 text-white font-semibold rounded-full hover:cursor-pointer hover:bg-indigo-800 hover:rotate-45 transition-all duration-300"
                 >
                     <FiPlus />
                 </button>
@@ -61,13 +61,13 @@ export default function Aside({ user, onNoteCreated }) {
                                 setIsCreateNoteOpen(true);
                                 setIsMenuOpen(false);
                             }}
-                            className="p-2 bg-black text-white font-semibold rounded-full hover:cursor-pointer hover:bg-gray-800 hover:rotate-45 transition-all duration-300"
+                            className="p-2 bg-indigo-600 text-white font-semibold rounded-full hover:cursor-pointer hover:bg-indigo-800 hover:rotate-45 transition-all duration-300"
                         >
                             <FiPlus />
                         </button>
                         <button
                             onClick={handleLogout}
-                            className="w-full font-semibold hover:cursor-pointer px-3 py-1 bg-black hover:bg-gray-800 text-white rounded-md shadow-md transform transition-all"
+                            className="w-full font-semibold hover:cursor-pointer px-3 py-1 bg-indigo-600 hover:bg-indigo-800 text-white rounded-md shadow-md transform transition-all"
                         >
                             Logout
                         </button>
