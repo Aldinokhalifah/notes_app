@@ -27,13 +27,13 @@ export default function Dashboard() {
         const fetchData = async () => {
             try {
                 // Ambil profil user
-                const user = await axios.get("http://localhost:5000/api/user/profile", {
+                const user = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setUser(user.data);
 
                 // Ambil semua notes
-                const notes = await axios.get("http://localhost:5000/api/notes", {
+                const notes = await axios.get(`${import.meta.env.VITE_API_URL}/api/notes`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 
@@ -156,7 +156,7 @@ export default function Dashboard() {
     const handleNoteDelete = async (noteId) => {
         try {
             // Gunakan customId untuk API call
-            await axios.delete(`http://localhost:5000/api/notes/${noteId}`, {
+            await axios.delete(`${import.meta.env.VITE_API_URL}/api/notes/${noteId}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             

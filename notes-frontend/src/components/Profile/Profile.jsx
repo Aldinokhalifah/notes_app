@@ -22,11 +22,11 @@ export default function Profile() {
 
         (async () => {
         try {
-            const { data: userData } = await axios.get("http://localhost:5000/api/user/profile", { headers: { Authorization: `Bearer ${token}` } });
+            const { data: userData } = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/profile`, { headers: { Authorization: `Bearer ${token}` } });
             setUser(userData);
             setProfile({ name: userData.name, email: userData.email });
 
-            const { data: notesRes } = await axios.get("http://localhost:5000/api/notes", { headers: { Authorization: `Bearer ${token}` } });
+            const { data: notesRes } = await axios.get(`${import.meta.env.VITE_API_URL}/api/notes`, { headers: { Authorization: `Bearer ${token}` } });
             setNotes(notesRes.data);
         } catch (err) {
             console.error(err);
@@ -62,7 +62,7 @@ export default function Profile() {
         setMessage(""); setError("");
         try {
         await axios.put(
-            "http://localhost:5000/api/user/profile",
+            `${import.meta.env.VITE_API_URL}/api/user/profile`,
             profile,
             { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -85,7 +85,7 @@ export default function Profile() {
             }
 
             await axios.put(
-                "http://localhost:5000/api/user/profile",
+                `${import.meta.env.VITE_API_URL}/api/user/profile`,
                 {
                     oldPassword: passwords.current_password, // Sesuaikan dengan backend
                     password: passwords.password

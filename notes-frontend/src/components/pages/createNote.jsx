@@ -10,7 +10,7 @@ export default function CreateNote({ onClose, onNoteCreated }) {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.post('http://localhost:5000/api/notes', 
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/notes`, 
                 { title, content },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
